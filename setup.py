@@ -13,14 +13,19 @@ CLASSIFIERS = [
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name='event-reporter',
     author='e271828-',
     author_email='e271828-@users.noreply.github.com',
-    description=(
-        'A Python wrapper for backend reporting via a worker/queue system'),
+    url='https://github.com/e271828-/event-reporter',
+    description='backend reporting via a worker/queue system',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     license='BSD',
-    version='1.0.0',
+    version='1.0.1',
     packages=['event_reporter'],
     install_requires=['google_measurement_protocol>=1.0', 'typing>=3.6.0'],
     classifiers=CLASSIFIERS,

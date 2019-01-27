@@ -4,16 +4,9 @@ event-reporter
 A Python wrapper for backend reporting via a worker/queue system.
 
 
+[![travis](https://travis-ci.org/e271828-/event-reporter.svg?branch=master)](https://travis-ci.org/e271828-/event-reporter)
 
-
-<div align="center">
-  <a href="https://travis-ci.org/e271828-/event-reporter">
-    <img src="https://travis-ci.org/e271828-/event-reporter.svg?branch=master" alt="Build status" />
-  </a>
-  <a href="http://codecov.io/github/e271828-/event-reporter?branch=master">
-    <img src="http://codecov.io/github/e271828-/event-reporter/coverage.svg?branch=master" alt="Codecov" />
-  </a>
-</div>
+[![Codecov](http://codecov.io/github/e271828-/event-reporter/coverage.svg?branch=master)](http://codecov.io/github/e271828-/event-reporter?branch=master)
 
 
 System flow:
