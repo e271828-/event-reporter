@@ -1,7 +1,6 @@
 language: python
 python:
   - 3.6
-  - 3.7
 install:
   - python3 setup.py install
   - pip3 install mypy nose mockredispy nose-cov
