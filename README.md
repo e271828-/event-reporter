@@ -33,6 +33,10 @@ r = er.fetch()
 er.dispatch(r)
 ```
 
+## Env vars used
+`EVENTREPORTER_QUEUE_NAME` (redis key)
+`UA_ID` (GA UA ID)
+
 ## Testing
 ```
 export UA_ID='My_UA_ID'

@@ -40,12 +40,31 @@ class EventReporter(object):
         self.conn.rpush(self.queue_name, json.dumps(event))
 
     def fetch(self):
-        ''' fetches a single event from the queue '''
+        ''' fetch and remove most recent event from the queue '''
         event = self.conn.rpop(self.queue_name)
         if event:
             return json.loads(event)
         else:
             return None
+
+    def fetch_oldest(self, blocking=True, timeout=None):
+        '''
+        remove and return oldest event from the queue. 
+        blocks until an event is available if blocking is True and timeout is None.
+        '''
+        if blocking:
+            if timeout:
+                event = self.conn.blpop(self.queue_name, timeout=timeout)
+            else:
+                # hack for mockredis
+                event = self.conn.blpop(self.queue_name)                
+        else:
+            event = self.conn.lpop(self.queue_name)
+
+        if event:
+            event = json.loads(event[1])
+        return event
+
 
     def dispatch(self, data: Dict):
         '''
