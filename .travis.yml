@@ -1,0 +1,13 @@
+language: python
+python:
+  - 3.6
+  - 3.7
+install:
+  - python setup.py install
+  - pip install mypy nose mockredis nose-cov
+  - pip install codecov
+script:
+  - nosetests --with-cov --cov event_reporter tests/
+  - mypy event_reporter --ignore-missing-imports
+after_success:
+  - codecov
