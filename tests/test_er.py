@@ -1,6 +1,8 @@
 import unittest
 from event_reporter import EventReporter
 from mockredis.noseplugin import WithRedis
+from mockredis.exceptions import ResponseError
+
 import os
 
 class EventReporterTest(unittest.TestCase):
@@ -21,7 +23,9 @@ class EventReporterTest(unittest.TestCase):
         """
         Checks to see that the EventReporter stores expected data
         """
-        self.er.store('ga', 'event', '20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web')
+        ar = self.er.store('ga', 'event', '20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web')
+
+        self.assertTrue(ar == None)
 
         expected = {
             'handler': 'ga',
@@ -49,4 +53,26 @@ class EventReporterTest(unittest.TestCase):
         # NOTE: live test.
         self.assertTrue(self.er.dispatch(r))
 
-        print(f'Data has been sent to {self.my_ua}. Please check real-time stats to confirm correctness.')
+        # print(f'Data has been sent to {self.my_ua}. Please check real-time stats to confirm correctness.')
+
+
+    def test_unsafe_store(self):
+        '''
+        Verify that e.g. a redis or argument failure throws an exception.
+        '''
+        with self.assertRaises(TypeError):
+            self.er.store(category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web')
+
+    def test_safe_store_fail(self):
+        '''
+        Verify that e.g. a redis or argument failure does not throw an exception.
+        '''
+        r = self.er.safe_store(None, None, None, action='action_name', aip='1', uip='1.2.3.4', ds='web')
+        self.assertTrue(r == False)
+
+    def test_safe_store_success(self):
+        '''
+        Verify that e.g. a redis or argument failure does not throw an exception.
+        '''
+        r = self.er.safe_store('ga', 'event', '20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web')
+        self.assertTrue(r == None)

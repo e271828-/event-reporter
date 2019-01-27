@@ -83,6 +83,20 @@ class EventReporter(object):
         else:
             raise ValueError('unknown handler')
 
+    def safe_store(self, handler, etype, clientid, **data: Dict):
+        '''
+        Like store, but never throws an exception.
+        '''
+        r = False
+
+        try:
+            r = self.store(handler, etype, clientid, **data)
+        except Exception as e:
+            LOG.error(f'safe_store: store failed with: {e}')
+
+        return r
+
+
     def store(self, handler: str, etype: str, clientid: str, **data: Dict):
         '''
         Stores an event dict with its timestamp in ms onto a simple queue.
@@ -101,6 +115,7 @@ class EventReporter(object):
         Called by e.g. API endpoints that need to return quickly.
         Returns value of queue op action.
         '''
+        assert handler and etype and clientid
 
         final_data = {
             "handler": handler,
