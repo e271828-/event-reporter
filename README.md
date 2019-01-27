@@ -18,7 +18,7 @@ from redis import StrictRedis
 
 er = EventReporter(conn=StrictRedis())
 
-er.store('ga', 'event', '<uuid4 clientid>', aip='1', uip='1.2.3.4', ds='web')
+er.store('ga', 'event', '<uuid4 clientid>', category='event_category', action='action_name', aip='1', uip='1.2.3.4', ds='web')
 ```
 
 Fetch event within worker and dispatch to final destination:
