@@ -4,7 +4,7 @@ python:
   - 3.7
 install:
   - python3 setup.py install
-  - pip3 install mypy nose mockredis nose-cov
+  - pip3 install mypy nose mockredispy nose-cov
   - pip3 install codecov
 script:
   - nosetests --with-cov --cov event_reporter tests/
