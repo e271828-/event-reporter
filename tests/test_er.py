@@ -109,3 +109,40 @@ class EventReporterTest(unittest.TestCase):
         '''
         r = self.er.safe_store('ga', 'event', '20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web')
         self.assertTrue(r == None)
+
+
+    def test_store_fetch_dispatch_referrer(self):
+        """
+        Checks to see that the EventReporter stores expected data with referrer.
+        Looks like it's unnecessary to urlencode prior to handing it off.
+        """
+        ar = self.er.store('ga', 'event', '20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web', dr='http://www.test.com')
+
+        self.assertTrue(ar == None)
+
+        expected = {
+            'handler': 'ga',
+            'etype': 'event',
+            'clientid': '20538abc-a8af-46e0-b292-0999d94468e9',
+            'ts': 1548546584914,
+            'args': {
+                'category': 'user',
+                'action': 'action_name',
+                'aip': '1',
+                'uip': '1.2.3.4',
+                'ds': 'web',
+                'dr': 'http://www.test.com'
+            }
+        }
+
+        r = self.er.fetch()
+
+        self.assertTrue(isinstance(r['ts'], int))
+
+        # ts varies
+        del expected['ts']
+
+        self.assertDictContainsSubset(expected, r)
+
+        # NOTE: live test.
+        self.assertTrue(self.er.dispatch(r))
