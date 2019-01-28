@@ -21,8 +21,8 @@ def fetch_func():
         try:
             process_item(item)
         except Exception as e:
-            LOG.error("process_item failed:{}, message: {}".format(
-                e, message))
+            LOG.error("process_item failed:{}, item: {}".format(
+                e, item))
             time.sleep(10)  # sleep for 10 seconds
     time.sleep(0.001)  # be nice to the system :)
 
