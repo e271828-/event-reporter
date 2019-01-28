@@ -16,7 +16,7 @@ def process_item(item):
     return ER.dispatch(item)
 
 def fetch_func():
-    item = ER.fetch_oldest(blocking=True, timeout=5)
+    item = ER.fetch_oldest(blocking=False)
     if item:
         try:
             process_item(item)
