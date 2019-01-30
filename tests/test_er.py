@@ -19,6 +19,13 @@ class EventReporterTest(unittest.TestCase):
         """
         pass
 
+    @unittest.skip('will fail if env var overrides UA_ID')
+    def test_args(self):
+        """
+        Checks to see that EventReporter stores UA
+        """
+        self.assertTrue(self.er.UA == 'UA-116198943-3')
+
     def test_store_fetch_dispatch(self):
         """
         Checks to see that the EventReporter stores expected data
