@@ -62,7 +62,10 @@ class EventReporter(object):
             event = self.conn.lpop(self.queue_name)
 
         if event:
-            event = json.loads(event[1])
+            if type(event) == tuple:
+                event = json.loads(event[1])
+            else:
+                event = json.loads(event)
         return event
 
 

@@ -56,12 +56,44 @@ class EventReporterTest(unittest.TestCase):
         # print(f'Data has been sent to {self.my_ua}. Please check real-time stats to confirm correctness.')
 
 
-    def test_store_fetch_oldest(self):
+    def test_store_fetch_oldest_double(self):
         """
         Checks to see that the EventReporter fetch_oldest gets expected data
         """
         ar = self.er.store('ga', 'event', '20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web')
         ar2 = self.er.store('ga', 'event', '20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name_2', aip='1', uip='1.2.3.4', ds='web')
+
+        self.assertTrue(ar == None)
+
+        expected = {
+            'handler': 'ga',
+            'etype': 'event',
+            'clientid': '20538abc-a8af-46e0-b292-0999d94468e9',
+            'ts': 1548546584914,
+            'args': {
+                'category': 'user',
+                'action': 'action_name',
+                'aip': '1',
+                'uip': '1.2.3.4',
+                'ds': 'web'
+            }
+        }
+
+        r = self.er.fetch_oldest()
+
+        self.assertTrue(isinstance(r['ts'], int))
+
+        # ts varies
+        del expected['ts']
+
+        self.assertDictContainsSubset(expected, r)
+
+
+    def test_store_fetch_oldest_single(self):
+        """
+        Checks to see that the EventReporter fetch_oldest gets expected data
+        """
+        ar = self.er.store('ga', 'event', '20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web')
 
         self.assertTrue(ar == None)
 
