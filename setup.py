@@ -28,5 +28,6 @@ setup(
     version='1.0.5',
     packages=['event_reporter'],
     install_requires=['google_measurement_protocol>=1.0', 'typing>=3.6.0'],
+    test_requires=['mockredispy','nose'],
     classifiers=CLASSIFIERS,
     platforms=['any'])
