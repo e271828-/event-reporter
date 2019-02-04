@@ -30,7 +30,7 @@ class EventReporterTest(unittest.TestCase):
         """
         Checks to see that the EventReporter stores expected data
         """
-        ar = self.er.store('ga', 'event', '20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web')
+        ar = self.er.store('ga', 'event', '20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web', ua='my-useragent-test')
 
         self.assertTrue(ar == None)
 
@@ -44,7 +44,8 @@ class EventReporterTest(unittest.TestCase):
                 'action': 'action_name',
                 'aip': '1',
                 'uip': '1.2.3.4',
-                'ds': 'web'
+                'ds': 'web',
+                'ua': 'my-useragent-test'
             }
         }
 

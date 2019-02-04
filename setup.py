@@ -25,7 +25,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     license='BSD',
-    version='1.0.5',
+    version='1.0.6',
     packages=['event_reporter'],
     install_requires=['google_measurement_protocol>=1.0', 'typing>=3.6.0'],
     test_requires=['mockredispy','nose'],

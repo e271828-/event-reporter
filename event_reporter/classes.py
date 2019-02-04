@@ -91,9 +91,17 @@ class EventReporter(object):
             else:
                 raise ValueError('unknown etype')
 
+            # GA appears to ignore its own 'ua' override.
+            # this is silly, but is the recommended solution.
+            user_agent = data['args'].get('ua')
+            if user_agent:
+                extra_headers = {'user-agent': user_agent}
+            else:
+                extra_headers = {}
+
             # LOG.debug('payload: {}'.format(list(payload)))
             # send data (res is list of requests objs)
-            res = google_measurement_protocol.report(self.UA, data['clientid'], payload)
+            res = google_measurement_protocol.report(self.UA, data['clientid'], payload, extra_headers=extra_headers)
 
             if not res:
                 raise ValueError('nothing to send')
