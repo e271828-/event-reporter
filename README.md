@@ -36,6 +36,7 @@ er.dispatch(r)
 ## Env vars used
 `EVENTREPORTER_QUEUE_NAME` (redis key)
 `UA_ID` (GA UA ID)
+`EVENTREPORTER_TTL` (int, expire time)
 
 ## Testing
 ```

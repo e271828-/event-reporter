@@ -8,6 +8,7 @@ import google_measurement_protocol  # event, pageview, report
 
 LOG = logging.getLogger("EventReporter")
 
+TTL = os.getenv('EVENTREPORTER_TTL') # event reporter TTL set in env
 
 class EventReporter(object):
     def __init__(self, conn, UA=None, queue_name=None):
@@ -38,6 +39,9 @@ class EventReporter(object):
     def write_event(self, event):
         ''' write event to queue '''
         self.conn.rpush(self.queue_name, json.dumps(event))
+        ''' set TTL for key '''
+        if TTL:
+            self.conn.expire(self.queue_name, int(TTL))
 
     def fetch(self):
         ''' fetch and remove most recent event from the queue '''
