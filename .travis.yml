@@ -2,8 +2,9 @@ language: python
 python:
   - 3.6
 install:
+  - pip3 install -r requirements.txt
   - python3 setup.py install
-  - pip3 install mypy nose mockredispy nose-cov
+  - pip3 install mypy nose-cov
   - pip3 install codecov
 script:
   - nosetests --with-cov --cov event_reporter tests/
