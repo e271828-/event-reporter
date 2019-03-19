@@ -2,6 +2,7 @@ import unittest
 from event_reporter import EventReporter
 from mockredis.noseplugin import WithRedis
 from mockredis.exceptions import ResponseError
+from mock import patch
 
 import os
 
@@ -186,3 +187,15 @@ class EventReporterTest(unittest.TestCase):
 
         # NOTE: live test.
         self.assertTrue(self.er.dispatch(r))
+
+
+    @patch('keen.add_event')
+    def test_keen(self,store_event):
+        # Keen requires an event
+        self.assertRaises(TypeError, self.er.store, 'keen', '20538abc-a8af-46e0-b292-0999d94468e9', 'user', 'action_name', '1', '1.2.3.4', 'web')
+
+        # Keen can be stored
+        self.er.store(handler='keen', etype='event', clientid='20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web')
+        # Keen can dispatch event to be sent
+        self.er.dispatch(self.er.fetch())
+        assert store_event.called

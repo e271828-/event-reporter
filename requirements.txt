@@ -1,2 +1,5 @@
 google_measurement_protocol
+keen
+mock
 mockredispy
+nose
