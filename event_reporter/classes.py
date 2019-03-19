@@ -9,7 +9,8 @@ import google_measurement_protocol  # event, pageview, report
 
 LOG = logging.getLogger("EventReporter")
 
-TTL = os.getenv('EVENTREPORTER_TTL') # event reporter TTL set in env
+TTL = os.getenv('EVENTREPORTER_TTL')  # event reporter TTL set in env
+
 
 class EventReporter(object):
     def __init__(self, conn, UA=None, queue_name=None):
@@ -26,10 +27,12 @@ class EventReporter(object):
         default_ua = os.getenv('UA_ID', None)
         self.UA = UA or default_ua
         # default queue name (redis key) to store and fetch events
-        default_queue_name = os.getenv('EVENTREPORTER_QUEUE_NAME', 'temp___eventreporterqueue')
+        default_queue_name = os.getenv('EVENTREPORTER_QUEUE_NAME',
+                                       'temp___eventreporterqueue')
         self.queue_name = queue_name or default_queue_name
 
-        logging.basicConfig(level='WARNING', format='%(name)s | %(levelname)s | %(message)s')
+        logging.basicConfig(
+            level='WARNING', format='%(name)s | %(levelname)s | %(message)s')
         self.logger = logging.getLogger('EventReporter')
         self.logger.setLevel(logging.DEBUG)
 
@@ -62,7 +65,7 @@ class EventReporter(object):
                 event = self.conn.blpop(self.queue_name, timeout=timeout)
             else:
                 # hack for mockredis
-                event = self.conn.blpop(self.queue_name)                
+                event = self.conn.blpop(self.queue_name)
         else:
             event = self.conn.lpop(self.queue_name)
 
@@ -72,7 +75,6 @@ class EventReporter(object):
             else:
                 event = json.loads(event)
         return event
-
 
     def _dispatch_ga(self, ua, data):
         if data['etype'] == 'event':
@@ -92,19 +94,19 @@ class EventReporter(object):
 
         # LOG.debug('payload: {}'.format(list(payload)))
         # send data (res is list of requests objs)
-        res = google_measurement_protocol.report(ua, data['clientid'], payload, extra_headers=extra_headers)
+        res = google_measurement_protocol.report(
+            ua, data['clientid'], payload, extra_headers=extra_headers)
 
         if not res:
             raise ValueError('nothing to send')
 
         for req in res:
-           req.raise_for_status() 
+            req.raise_for_status()
         return True
 
     def _dispatch_keen(self, event, data):
         keen.add_event(event, data)
         return True
-
 
     def dispatch(self, data: Dict):
         '''
@@ -126,17 +128,20 @@ class EventReporter(object):
         if data['handler'] == 'keen':
             event = data['etype']
             if not event:
-                LOG.error("You need to specific an event (etype) if you dispatch to keen")
+                LOG.error(
+                    "You need to specific an event (etype) if you dispatch to keen"
+                )
                 return False
             else:
                 try:
                     return self._dispatch_keen(event, data=data)
                 except keen.exceptions.InvalidEnvironmentError as e:
-                    LOG.warn("You are sending to keen but you need to specify some envvars{}".format(e))
+                    LOG.warn(
+                        "You are sending to keen but you need to specify some envvars{}"
+                        .format(e))
                     return False
         else:
             raise ValueError('unknown handler')
-
 
     def safe_store(self, handler, etype, clientid, **data: Dict):
         '''
@@ -150,7 +155,6 @@ class EventReporter(object):
             LOG.error(f'safe_store: store failed with: {e}')
 
         return r
-
 
     def store(self, handler: str, etype: str, clientid: str, **data: Dict):
         '''
