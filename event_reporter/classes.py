@@ -10,7 +10,7 @@ import beeline
 
 LOG = logging.getLogger("EventReporter")
 
-TTL = os.getenv('EVENTREPORTER_TTL') # event reporter TTL set in env
+TTL = os.getenv('EVENTREPORTER_TTL')  # event reporter TTL set in env
 
 logging.getLogger('urllib3').setLevel(logging.INFO)
 
@@ -32,13 +32,18 @@ class EventReporter(object):
 
         # configure honeycomb
         if honey_writekey:
-            beeline.init( writekey=honey_writekey, dataset='event_reporter', service_name='event_reporter')
+            beeline.init(
+                writekey=honey_writekey,
+                dataset='event_reporter',
+                service_name='event_reporter')
 
         # default queue name (redis key) to store and fetch events
-        default_queue_name = os.getenv('EVENTREPORTER_QUEUE_NAME', 'temp___eventreporterqueue')
+        default_queue_name = os.getenv('EVENTREPORTER_QUEUE_NAME',
+                                       'temp___eventreporterqueue')
         self.queue_name = queue_name or default_queue_name
 
-        logging.basicConfig(level='WARNING', format='%(name)s | %(levelname)s | %(message)s')
+        logging.basicConfig(
+            level='WARNING', format='%(name)s | %(levelname)s | %(message)s')
         self.logger = logging.getLogger('EventReporter')
         self.logger.setLevel(logging.DEBUG)
 
@@ -71,7 +76,7 @@ class EventReporter(object):
                 event = self.conn.blpop(self.queue_name, timeout=timeout)
             else:
                 # hack for mockredis
-                event = self.conn.blpop(self.queue_name)                
+                event = self.conn.blpop(self.queue_name)
         else:
             event = self.conn.lpop(self.queue_name)
 
@@ -81,7 +86,6 @@ class EventReporter(object):
             else:
                 event = json.loads(event)
         return event
-
 
     def dispatch(self, data: Dict):
         '''
@@ -115,13 +119,17 @@ class EventReporter(object):
 
             # LOG.debug('payload: {}'.format(list(payload)))
             # send data (res is list of requests objs)
-            res = google_measurement_protocol.report(self.UA, data['clientid'], payload, extra_headers=extra_headers)
+            res = google_measurement_protocol.report(
+                self.UA,
+                data['clientid'],
+                payload,
+                extra_headers=extra_headers)
 
             if not res:
                 raise ValueError('nothing to send')
 
             for req in res:
-               req.raise_for_status() 
+                req.raise_for_status()
             return True
         elif data['handler'] == 'honey':
             event = beeline.new_event()
@@ -142,7 +150,6 @@ class EventReporter(object):
             LOG.error(f'safe_store: store failed with: {e}')
 
         return r
-
 
     def store(self, handler: str, etype: str, clientid: str, **data: Dict):
         '''
