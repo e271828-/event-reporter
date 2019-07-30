@@ -1,17 +1,22 @@
+import json
 import logging
 import os
-import json
-from typing import Dict
 import time
+from typing import Dict
 
 import google_measurement_protocol  # event, pageview, report
+
+import beeline
 
 LOG = logging.getLogger("EventReporter")
 
 TTL = os.getenv('EVENTREPORTER_TTL') # event reporter TTL set in env
 
+logging.getLogger('urllib3').setLevel(logging.INFO)
+
+
 class EventReporter(object):
-    def __init__(self, conn, UA=None, queue_name=None):
+    def __init__(self, conn, UA=None, queue_name=None, honey_writekey=None):
         '''
         Initialize an EventReporter. Responsible for putting events
         and their timestamps into a simple Redis list queue.
@@ -24,6 +29,11 @@ class EventReporter(object):
         self.conn = conn
         default_ua = os.getenv('UA_ID')
         self.UA = UA or default_ua
+
+        # configure honeycomb
+        if honey_writekey:
+            beeline.init( writekey=honey_writekey, dataset='event_reporter', service_name='event_reporter')
+
         # default queue name (redis key) to store and fetch events
         default_queue_name = os.getenv('EVENTREPORTER_QUEUE_NAME', 'temp___eventreporterqueue')
         self.queue_name = queue_name or default_queue_name
@@ -113,7 +123,10 @@ class EventReporter(object):
             for req in res:
                req.raise_for_status() 
             return True
-
+        elif data['handler'] == 'honey':
+            event = beeline.new_event()
+            event.add(data)
+            event.send()
         else:
             raise ValueError('unknown handler')
 
