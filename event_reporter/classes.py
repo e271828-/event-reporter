@@ -28,6 +28,8 @@ class EventReporter(object):
         super(EventReporter, self).__init__()
         self.conn = conn
         default_ua = os.getenv('UA_ID')
+        default_honeywritekey = os.getenv("HONEYCOMB_WRITEKEY")
+        self.honey_writekey = honey_writekey or default_honeywritekey
         self.UA = UA or default_ua
 
         # configure honeycomb
