@@ -150,6 +150,12 @@ class EventReporterTest(unittest.TestCase):
         r = self.er.safe_store('ga', 'event', '20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web')
         self.assertTrue(r == None)
 
+    def test_safe_store_success_honey(self):
+        '''
+        Verify that e.g. a redis or argument failure does not throw an exception.
+        '''
+        r = self.er.safe_store('honey', 'event', '20538abc-a8af-46e0-b292-0999d94468e9', category='user', action='action_name', aip='1', uip='1.2.3.4', ds='web')
+        self.assertTrue(r == None)
 
     def test_store_fetch_dispatch_referrer(self):
         """
