@@ -27,7 +27,7 @@ setup(
     license='BSD',
     version='1.0.7',
     packages=['event_reporter'],
-    install_requires=['google_measurement_protocol>=1.0', 'typing>=3.6.0'],
+    install_requires=['honeycomb-beeline>=2.1.0', 'google_measurement_protocol>=1.0', 'typing>=3.6.0'],
     test_requires=['mockredispy','nose'],
     classifiers=CLASSIFIERS,
     platforms=['any'])
