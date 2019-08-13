@@ -48,7 +48,7 @@ nosetests -s
 ## Dispatch Types
 
  - `ga`: GA
- - 'honey`: honeycomb.io
+ - `honey`: honeycomb.io
  - `slack`: slack
 
 ### Example slack event: Simple message
