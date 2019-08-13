@@ -7,6 +7,7 @@ from typing import Dict
 import google_measurement_protocol  # event, pageview, report
 
 import beeline
+import requests
 
 LOG = logging.getLogger("EventReporter")
 
@@ -77,7 +78,7 @@ class EventReporter(object):
             if timeout:
                 event = self.conn.blpop(self.queue_name, timeout=timeout)
             else:
-                # hack for mockredis
+                # hack for fakeredis
                 event = self.conn.blpop(self.queue_name)
         else:
             event = self.conn.lpop(self.queue_name)
@@ -132,13 +133,28 @@ class EventReporter(object):
 
             for req in res:
                 req.raise_for_status()
-            return True
         elif data['handler'] == 'honey':
             event = beeline.new_event()
             event.add(data)
             event.send()
+        elif data['handler'] == 'slack':
+            webhook = data['args'].get('webhook')
+            if not webhook:
+                raise ValueError('slack handler: missing webhook')
+            slack_data = {}
+            if data['args'].get('message'):
+                slack_data['text'] = data['args'].get('message')
+            elif data['args'].get('blocks'):
+                # support Block Kit Builder
+                slack_data['blocks'] = data['args'].get('blocks')
+            else:
+                raise ValueError('slack handler: missing both message and blocks')
+            response = requests.post(webhook, json=slack_data)
+            if response.status_code != 200:
+                self.logger.warning(f"could not send slack msg: {response}")
         else:
             raise ValueError('unknown handler')
+        return True
 
     def safe_store(self, handler, etype, clientid, **data: Dict):
         '''

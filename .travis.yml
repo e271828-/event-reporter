@@ -3,7 +3,8 @@ python:
   - 3.6
 install:
   - python3 setup.py install
-  - pip3 install mypy nose mockredispy nose-cov
+  - pip3 install mypy nose requests nose-cov
+  - pip3 install git+https://github.com/jamesls/fakeredis.git@d675ee1d6c4ac7a3bb0129f916232c0f2c6e9dd5#egg=fakeredis
   - pip3 install codecov
 script:
   - nosetests --with-cov --cov event_reporter tests/
