@@ -45,4 +45,30 @@ export UA_ID='My_UA_ID'
 nosetests -s
 ```
 
-.. and check your GA property to see the data.
+## Dispatch Types
+
+ - `ga`: GA
+ - 'honey`: honeycomb.io
+ - `slack`: slack
+
+### Example slack event: Simple message
+`er.store('slack', 'event', '<uuid4>', webhook='<slack_webhook_uri>', message='text')`
+
+### Example slack event: Blocks message
+`er.store('slack', 'event', '<uuid4>', webhook='<slack_webhook_uri>', blocks=<list_of_dicts>)`
+
+### Example slack blocks format
+```
+[
+	{
+		"type": "section",
+		"text": {
+			"type": "mrkdwn",
+			"text": "Hello
+			}
+	}
+]
+```
+
+
+.. and check your GA property, honeycomb dash, or slack channel to see the data.
