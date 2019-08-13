@@ -1,3 +1,4 @@
 google_measurement_protocol
 honeycomb-beeline
-mockredispy
+fakeredis
+requests
