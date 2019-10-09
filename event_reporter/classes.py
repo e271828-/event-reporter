@@ -151,7 +151,9 @@ class EventReporter(object):
                 raise ValueError('slack handler: missing both message and blocks')
             response = requests.post(webhook, json=slack_data)
             if response.status_code != 200:
-                self.logger.warning(f"could not send slack msg: {response}")
+                self.logger.warning(f"could not send slack msg: code {response.status_code} msg {response.text}. tried to send: {json.dumps(slack_data)}")
+            else:
+                self.logger.debug('sent slack webhook: {response.status_code}')
         else:
             raise ValueError('unknown handler')
         return True
