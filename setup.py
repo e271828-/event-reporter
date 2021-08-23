@@ -27,7 +27,7 @@ setup(
     license='BSD',
     version='1.0.8',
     packages=['event_reporter'],
-    install_requires=['honeycomb-beeline>=2.1.0', 'google_measurement_protocol>=1.0', 'typing>=3.6.0', 'requests>=2.22.0'],
+    install_requires=['honeycomb-beeline>=2.1.0', 'google_measurement_protocol>=1.0', 'typing>=3.6.0;python_version<"3.5"', 'requests>=2.22.0'],
     test_requires=['fakeredis','nose'],
     classifiers=CLASSIFIERS,
     platforms=['any'])
